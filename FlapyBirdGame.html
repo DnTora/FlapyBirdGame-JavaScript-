@@ -1,0 +1,188 @@
+<html>
+<canvas id="FlapyBirdGame" width = "800" height = "800"></canvas>
+<script>
+var canvas;
+var canvasContext;
+var blocks = []; 
+var player;
+
+var game = {
+  
+  fps: 30,
+  space: 80,
+  sizeBird: 20,
+  Yspeedbird: 20,
+  Xspeedbird: 20,
+  blockspeed: 10,
+  blockwidth: 70,
+  blockcolor: 'green'
+}
+
+ window.onload = function(){
+
+
+               canvas = document.getElementById("FlapyBirdGame");
+               canvasContext = canvas.getContext('2d');
+
+               player = new Player(0,canvas.height/2,game.sizeBird,game.Xspeedbird,game.Yspeedbird);
+               blocks.push(new Block(game.blockwidth));
+                calculateSpace(randomWhereToSpace(),0);
+           
+          setInterval(function(){
+
+              setUpdate();
+
+
+     },1000/game.fps);
+                          
+           window.addEventListener("keyup",function(evt){
+
+
+                              if(evt.keyCode == 37)
+                                     birdUp();
+
+           });
+
+
+};
+
+function setUpdate(){
+         
+        
+        draw();
+        movement();
+
+}
+function movement(){
+
+      player.y += 4;
+      for(var a in blocks)
+           blocks[a].x -= game.blockspeed;
+
+}
+function draw(){ 
+   //board
+                    buildRect(0,0,canvas.width,canvas.height,'black');
+                    //player
+                       
+                    buildRect(player.x,player.y,player.width,player.height,player.color);
+                    //show blocks
+                   showBlocks();
+}
+function birdUp(){
+
+              player.y -= player.Yspeed;
+              player.x += player.Xspeed;
+              console.log("work");
+}
+function Block(size){
+
+        this.Yup;
+        this.Ydown;
+        this.Heightup;
+        this.Heightdown;
+        this.x = canvas.width-size;
+
+}
+
+function randomWhereToSpace(){
+
+     return Math.floor((Math.random()*(canvas.height-game.space))+game.space);
+
+}
+function showBlocks(){
+            
+                   for(var i in blocks){
+                               //up
+                                buildRect(blocks[i].x,blocks[i].Ydown,game.blockwidth,blocks[i].Heightdown,game.blockcolor);
+                               buildRect(blocks[i].x,blocks[i].Yup,game.blockwidth,blocks[i].Heightup,game.blockcolor);
+                               //down 
+                          
+                                     
+                              }
+
+}
+function newBlock(){
+                         
+                         blocks.push(new Block(game.blockwidth));
+                         calculateSpace(randomWhereToSpace(),blocks.length-1);
+}
+
+function Player(x,y,size,Xspeed,Yspeed){
+
+    this.x = x;
+    this.y = y;
+    this.width = size;
+    this.height = size;
+    this.color = 'yellow';
+    this.Yspeed = Yspeed;
+    this.Xspeed = Xspeed;
+}
+// num its the random location, i its the index in the array of the speciefc block
+function calculateSpace(num,i){
+
+                   if(num == game.space){
+                       blocks[i].Yup = game.space;
+                       blocks[i].Heightup = (canvas.height/2) - game.space;
+                       blocks[i].Ydown = canvas.height/2;
+                       blocks[i].Heightdown = canvas.height/2;
+                     }
+                               
+                   else{
+       
+                          if(num == canvas.height){                                          
+                              blocks[i].Yup = 0;
+                              blocks[i].Heightup = canvas.height/2;
+                              blocks[i].Ydown = canvas.height/2;
+                              blocks[i].Heightdown = (canvas.height/2)-game.space;
+                            }
+                        
+                          else{
+
+                                 if(num == canvas.height/2){                                         
+                                     blocks[i].Yup = 0;
+                                     blocks[i].Heightup = (canvas.height/2)-(game.space/2);
+                                     blocks[i].Ydown = (canvas.height/2)+(game.space/2);
+                                     blocks[i].Heightdown = (canvas.height/2)-(game.space/2);                
+                               }
+                                 else{
+                                        if(num>canvas.height/2){
+                                             if(num-game.space<canvas.height/2){                                                                      
+                                                 blocks[i].Yup = 0;
+                                                 blocks[i].Heightup = (canvas.height/2)-(game.space-(num-(canvas.height/2)));
+                                                 blocks[i].Ydown = (canvas.height/2)+(num-(canvas.height/2));
+                                                 blocks[i].Heightdown = (canvas.height/2)-(num-(canvas.height/2));                                                                
+                                              }
+                                              else{                                                                 
+                                                 blocks[i].Yup = 0;
+                                                 blocks[i].Heightup = (canvas.height/2)+((num-(canvas.height/2))-game.space);
+                                                 blocks[i].Ydown = (canvas.height/2)+(num-(canvas.height/2));
+                                                 blocks[i].Heightdown = (canvas.height/2)-(num-(canvas.height/2));            
+                                            
+                                           }      
+                                        }  
+
+                                       else{                                                                                                                
+                                                 blocks[i].Yup = 0;
+                                                 blocks[i].Heightup = (canvas.height/2)-((canvas.height/2)-num);
+                                                 blocks[i].Ydown = (canvas.height/2)+(80-((canvas.height/2)-num));
+                                                 blocks[i].Heightdown = (canvas.height/2)-(80-((canvas.height/2)-num)); 
+
+                                            }
+                           
+                                       
+                               
+                                  
+                              }
+                         }
+                   }
+
+}
+function buildRect(left,top,width,height,color){
+
+       canvasContext.fillStyle = color;
+       canvasContext.fillRect(left,top,width,height);
+
+}
+</script>
+</html>
