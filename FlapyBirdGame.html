@@ -25,7 +25,7 @@ var game = {
                canvasContext = canvas.getContext('2d');
 
                player = new Player(0,canvas.height/2,game.sizeBird,game.Xspeedbird,game.Yspeedbird);
-               blocks.push(new Block(game.blockwidth));
+               blocks.push(new Block(game.blockwidth,canvas.width-game.blockwidth));
                 calculateSpace(randomWhereToSpace(),0);
            
           setInterval(function(){
@@ -75,13 +75,13 @@ function birdUp(){
               player.x += player.Xspeed;
               console.log("work");
 }
-function Block(size){
+function Block(size, x){
 
         this.Yup;
         this.Ydown;
         this.Heightup;
         this.Heightdown;
-        this.x = canvas.width-size;
+        this.x = x;
 
 }
 
