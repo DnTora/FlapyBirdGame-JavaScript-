@@ -1,23 +1,24 @@
 <html>
-<canvas id="FlapyBirdGame" width = "800" height = "800"></canvas>
+<canvas id="FlapyBirdGame" width = "1400" height = "800"></canvas>
 <script>
 var canvas;
 var canvasContext;
 var blocks = []; 
-var player;
+
 
 var game = {
-  
-  fps: 30,
-  space: 80,
+  counter: 0,
+  fps: 20,
+  space: 160,
   sizeBird: 20,
-  Yspeedbird: 20,
-  Xspeedbird: 20,
+  Yspeedbird: 40,
+  Xspeedbird: 3,
   blockspeed: 10,
   blockwidth: 70,
   blockcolor: 'green'
 }
-
+var check = "true";
+var counter = 0;
  window.onload = function(){
 
 
@@ -25,22 +26,26 @@ var game = {
                canvasContext = canvas.getContext('2d');
 
                player = new Player(0,canvas.height/2,game.sizeBird,game.Xspeedbird,game.Yspeedbird);
-               blocks.push(new Block(game.blockwidth,canvas.width-game.blockwidth));
+               newBlock();
                 calculateSpace(randomWhereToSpace(),0);
            
           setInterval(function(){
 
               setUpdate();
-
+            game.counter++;
+             if(game.counter  == 45)  {
+                        game.counter =0; 
+                       newBlock();
+}
 
      },1000/game.fps);
                           
            window.addEventListener("keyup",function(evt){
 
 
-                              if(evt.keyCode == 37)
-                                     birdUp();
-
+                              if(evt.keyCode == 32)
+                                     check = false;
+                             
            });
 
 
@@ -55,10 +60,11 @@ function setUpdate(){
 }
 function movement(){
 
-      player.y += 4;
+      birdUp();
+          
       for(var a in blocks)
            blocks[a].x -= game.blockspeed;
-
+  
 }
 function draw(){ 
    //board
@@ -70,10 +76,14 @@ function draw(){
                    showBlocks();
 }
 function birdUp(){
-
+              if(check == "true")
+                       player.y += player.Yspeed/2;
+            else{
               player.y -= player.Yspeed;
-              player.x += player.Xspeed;
-              console.log("work");
+            
+              console.log("work");}
+  
+      check = "true";
 }
 function Block(size, x){
 
@@ -104,8 +114,9 @@ function showBlocks(){
 }
 function newBlock(){
                          
-                         blocks.push(new Block(game.blockwidth));
+                         blocks.push(new Block(game.blockwidth,canvas.width-game.blockwidth));
                          calculateSpace(randomWhereToSpace(),blocks.length-1);
+                          
 }
 
 function Player(x,y,size,Xspeed,Yspeed){
@@ -165,8 +176,8 @@ function calculateSpace(num,i){
                                        else{                                                                                                                
                                                  blocks[i].Yup = 0;
                                                  blocks[i].Heightup = (canvas.height/2)-((canvas.height/2)-num);
-                                                 blocks[i].Ydown = (canvas.height/2)+(80-((canvas.height/2)-num));
-                                                 blocks[i].Heightdown = (canvas.height/2)-(80-((canvas.height/2)-num)); 
+                                                 blocks[i].Ydown = (canvas.height/2)+(game.space-((canvas.height/2)-num));
+                                                 blocks[i].Heightdown = (canvas.height/2)-(game.space-((canvas.height/2)-num)); 
 
                                             }
                            
